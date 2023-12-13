@@ -3,6 +3,7 @@ package pl.training.calculator
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
@@ -25,27 +26,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: CounterViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Counter()
+            Counter(viewModel)
         }
     }
 }
 
 @Composable
-fun Counter() {
-    val value = remember { mutableIntStateOf(0) }
+fun Counter(viewModel: CounterViewModel) {
     Column(
         verticalArrangement = spacedBy(space = 10.dp, alignment = CenterVertically),
         horizontalAlignment = CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        Text(text = "Current value: ${value.intValue}")
-        Button(onClick = { value.intValue++ }) {
+        Text(text = "Current value: ${viewModel.counter.value}")
+        Button(onClick = { viewModel.increment() }) {
             Text(text = "Increment")
         }
-        Button(onClick = { value.intValue-- }) {
+        Button(onClick = { viewModel.decrement() }) {
             Text(text = "Decrement")
         }
     }
@@ -54,5 +57,5 @@ fun Counter() {
 @Preview(showBackground = true)
 @Composable
 fun CounterPreview() {
-    Counter()
+    Counter(CounterViewModel())
 }
