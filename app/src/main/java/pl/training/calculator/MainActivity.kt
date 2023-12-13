@@ -3,7 +3,6 @@ package pl.training.calculator
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement.SpaceAround
@@ -16,7 +15,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.Center
@@ -25,23 +27,63 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
 import androidx.compose.ui.graphics.Color.Companion.LightGray
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.font.FontWeight.Companion.Light
 import androidx.compose.ui.text.style.TextAlign.Companion.End
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
 
-    val viewModel: CalculatorViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Calculator(viewModel)
+            //Calculator(viewModel)
+            Example()
         }
     }
+}
+
+
+@Composable
+fun Example(viewModel: CalculatorViewModel = viewModel()) {
+
+
+   /* Column {
+        viewModel.messages.forEach {
+            Text(
+                text = it,
+                fontSize = 36.sp,
+                color = Red
+            )
+        }
+    }*/
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = SpaceAround
+    ) {
+        Button(onClick = { viewModel.addTodo() }) {
+            Text(
+                text = "Dodaj",
+                fontSize = 36.sp,
+                color = White
+            )
+        }
+    }
+    LazyColumn {
+        items(viewModel.messages) {
+            Text(
+                text = it,
+                fontSize = 36.sp,
+                color = Red
+            )
+        }
+    }
+
 }
 
 @Composable
@@ -58,7 +100,9 @@ fun Calculator(viewModel: CalculatorViewModel) {
             modifier = Modifier.fillMaxHeight(),
             verticalArrangement = SpaceAround
         ) {
-            Display(viewModel.state)
+            if (viewModel.state.firstValue.isNotBlank()) {
+                Display(viewModel.state)
+            }
             Column(
                 verticalArrangement = spacedBy(buttonSpacing)
             ) {
@@ -279,5 +323,5 @@ fun CalculatorButton(
 @Preview(showBackground = true)
 @Composable
 fun CalculatorPreview() {
-    Calculator(CalculatorViewModel())
+    Example()
 }
